@@ -4,7 +4,6 @@ Modeling module for the Bank Marketing project.
 Provides:
 - Baseline models (dummy classifier)
 - Classic ML models: Logistic Regression, Random Forest, XGBoost
-- Model training with optional class balancing
 - Hyperparameter tuning (GridSearchCV)
 """
 
@@ -12,7 +11,6 @@ import numpy as np
 from sklearn.dummy import DummyClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
 from xgboost import XGBClassifier
 
@@ -41,7 +39,7 @@ def get_baseline(strategy: str = "stratified") -> DummyClassifier:
     -------
     DummyClassifier
     """
-    return DummyClassifier(strategy=strategy, random_state=RANDOM_STATE)
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -66,11 +64,7 @@ def get_logistic_regression(
     -------
     LogisticRegression
     """
-    return LogisticRegression(
-        class_weight=class_weight,
-        max_iter=max_iter,
-        random_state=RANDOM_STATE,
-    )
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -98,13 +92,7 @@ def get_random_forest(
     -------
     RandomForestClassifier
     """
-    return RandomForestClassifier(
-        n_estimators=n_estimators,
-        class_weight=class_weight,
-        max_depth=max_depth,
-        random_state=RANDOM_STATE,
-        n_jobs=-1,
-    )
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -135,15 +123,7 @@ def get_xgboost(
     -------
     XGBClassifier
     """
-    return XGBClassifier(
-        n_estimators=n_estimators,
-        learning_rate=learning_rate,
-        max_depth=max_depth,
-        scale_pos_weight=scale_pos_weight,
-        random_state=RANDOM_STATE,
-        use_label_encoder=False,
-        eval_metric="logloss",
-    )
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -183,15 +163,4 @@ def tune_model(
     -------
     GridSearchCV (fitted)
     """
-    grid = GridSearchCV(
-        model,
-        param_grid,
-        cv=cv,
-        scoring=scoring,
-        n_jobs=n_jobs,
-        verbose=1,
-    )
-    grid.fit(X_train, y_train)
-    print(f"Best params: {grid.best_params_}")
-    print(f"Best CV score ({scoring}): {grid.best_score_:.4f}")
-    return grid
+    pass

@@ -5,7 +5,6 @@ Includes:
 - Setting random seeds for reproducibility
 - Timer context manager
 - Model saving/loading
-- Formatting helpers
 """
 
 import os
@@ -36,31 +35,14 @@ OUTPUTS_DIR.mkdir(exist_ok=True)
 def set_seed(seed: int = 42) -> None:
     """
     Set random seeds for reproducibility across Python, NumPy, and
-    (potentially) other libraries.
+    optionally TensorFlow/PyTorch.
 
     Parameters
     ----------
     seed : int
         Random seed value.
     """
-    random.seed(seed)
-    np.random.seed(seed)
-    os.environ["PYTHONHASHSEED"] = str(seed)
-
-    # Attempt to set seeds for optional dependencies
-    try:
-        import tensorflow as tf
-        tf.random.set_seed(seed)
-    except ImportError:
-        pass
-
-    try:
-        import torch
-        torch.manual_seed(seed)
-        if torch.cuda.is_available():
-            torch.cuda.manual_seed_all(seed)
-    except ImportError:
-        pass
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -80,19 +62,10 @@ class Timer:
         self.start: float = 0.0
 
     def __enter__(self):
-        self.start = time.perf_counter()
-        return self
+        pass
 
     def __exit__(self, *args):
-        elapsed = time.perf_counter() - self.start
-        if elapsed < 1:
-            print(f"[{self.label}] {elapsed*1000:.0f} ms")
-        elif elapsed < 60:
-            print(f"[{self.label}] {elapsed:.2f} s")
-        else:
-            minutes = int(elapsed // 60)
-            seconds = elapsed % 60
-            print(f"[{self.label}] {minutes}m {seconds:.1f}s")
+        pass
 
 
 # ---------------------------------------------------------------------------
@@ -115,10 +88,7 @@ def save_model(model, name: str) -> str:
     str
         Path to the saved model.
     """
-    path = MODELS_DIR / f"{name}.joblib"
-    joblib.dump(model, path)
-    print(f"Model saved to {path}")
-    return str(path)
+    pass
 
 
 def load_model(name: str) -> object:
@@ -135,7 +105,4 @@ def load_model(name: str) -> object:
     object
         Loaded model.
     """
-    path = MODELS_DIR / f"{name}.joblib"
-    if not path.exists():
-        raise FileNotFoundError(f"Model not found: {path}")
-    return joblib.load(path)
+    pass

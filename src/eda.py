@@ -34,21 +34,14 @@ plt.rcParams.update({
 
 def summarize(df: pd.DataFrame) -> None:
     """
-    Print descriptive statistics for all columns.
+    Print descriptive statistics for numerical and categorical columns.
 
     Parameters
     ----------
     df : pd.DataFrame
         Input dataset.
     """
-    print("Numerical features summary:")
-    num_cols = df.select_dtypes(include=[np.number]).columns
-    print(df[num_cols].describe().round(2).to_string())
-    print(f"\nCategorical features summary:")
-    cat_cols = df.select_dtypes(include=["object"]).columns
-    for col in cat_cols:
-        n_unique = df[col].nunique()
-        print(f"  {col}: {n_unique} unique values")
+    pass
 
 
 def analyze_missing(df: pd.DataFrame) -> pd.Series:
@@ -65,16 +58,7 @@ def analyze_missing(df: pd.DataFrame) -> pd.Series:
     pd.Series
         Count of 'unknown' values per column.
     """
-    unknown_counts = (df == "unknown").sum()
-    unknown_counts = unknown_counts[unknown_counts > 0].sort_values(ascending=False)
-    if len(unknown_counts) == 0:
-        print("No 'unknown' values found.")
-    else:
-        print("'unknown' values per column:")
-        for col, count in unknown_counts.items():
-            pct = 100 * count / len(df)
-            print(f"  {col}: {count} ({pct:.1f}%)")
-    return unknown_counts
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -84,22 +68,15 @@ def analyze_missing(df: pd.DataFrame) -> pd.Series:
 def plot_target_distribution(y: pd.Series, title: str = "Target Variable Distribution") -> None:
     """
     Plot the target variable distribution (bar chart + percentages).
+
+    Parameters
+    ----------
+    y : pd.Series
+        Target variable (0/1).
+    title : str
+        Plot title.
     """
-    counts = y.value_counts()
-    labels = ["No (0)" if k == 0 else "Yes (1)" for k in counts.index]
-
-    fig, ax = plt.subplots()
-    bars = ax.bar(labels, counts.values, color=["steelblue", "darkorange"], edgecolor="white")
-    ax.set_title(title)
-    ax.set_ylabel("Number of clients")
-
-    for bar, count in zip(bars, counts.values):
-        pct = 100 * count / len(y)
-        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 50,
-                f"{count:,}\n({pct:.1f}%)", ha="center", fontweight="bold")
-
-    plt.tight_layout()
-    plt.show()
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -109,25 +86,15 @@ def plot_target_distribution(y: pd.Series, title: str = "Target Variable Distrib
 def plot_numerical_distributions(df: pd.DataFrame, columns: list[str] | None = None) -> None:
     """
     Plot histograms for numerical features.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Input dataset.
+    columns : list[str] or None
+        Specific columns to plot. If None, all numerical columns are used.
     """
-    if columns is None:
-        columns = df.select_dtypes(include=[np.number]).columns.tolist()
-    n_cols = len(columns)
-    n_rows = (n_cols + 2) // 3
-
-    fig, axes = plt.subplots(n_rows, 3, figsize=(15, 4 * n_rows))
-    axes = axes.flatten()
-
-    for i, col in enumerate(columns):
-        df[col].hist(bins=40, ax=axes[i], color="steelblue", edgecolor="white", alpha=0.8)
-        axes[i].set_title(col)
-        axes[i].set_ylabel("Frequency")
-
-    for j in range(i + 1, len(axes)):
-        axes[j].set_visible(False)
-
-    plt.tight_layout()
-    plt.show()
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -142,43 +109,19 @@ def plot_categorical_distributions(
 ) -> None:
     """
     Plot count plots for categorical features, optionally colored by target.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Input dataset.
+    target : pd.Series or None
+        If provided, colors bars by target class.
+    columns : list[str] or None
+        Specific columns to plot. If None, all categorical columns are used.
+    max_categories : int
+        Maximum number of categories to display per variable.
     """
-    if columns is None:
-        columns = df.select_dtypes(include=["object"]).columns.tolist()
-        # Exclude target if present in df
-        columns = [c for c in columns if c != "y"]
-
-    n_cols = len(columns)
-    n_rows = (n_cols + 2) // 3
-
-    fig, axes = plt.subplots(n_rows, 3, figsize=(15, 4 * n_rows))
-    axes = axes.flatten()
-
-    data = df.copy()
-    if target is not None:
-        data = data.copy()
-        data["__target__"] = target.map({1: "Yes", 0: "No"})
-        hue = "__target__"
-    else:
-        hue = None
-
-    for i, col in enumerate(columns):
-        n_unique = data[col].nunique()
-        if n_unique > max_categories:
-            top = data[col].value_counts().head(max_categories).index
-            plot_data = data[data[col].isin(top)]
-        else:
-            plot_data = data
-        sns.countplot(data=plot_data, x=col, hue=hue, ax=axes[i],
-                      palette="Set2", order=plot_data[col].value_counts().index)
-        axes[i].set_title(col)
-        axes[i].tick_params(axis="x", rotation=45)
-
-    for j in range(i + 1, len(axes)):
-        axes[j].set_visible(False)
-
-    plt.tight_layout()
-    plt.show()
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -188,19 +131,12 @@ def plot_categorical_distributions(
 def plot_correlation_matrix(df: pd.DataFrame, method: str = "pearson") -> None:
     """
     Plot a correlation matrix heatmap for numerical features.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Input dataset.
+    method : str
+        Correlation method ('pearson', 'spearman', or 'kendall').
     """
-    num_df = df.select_dtypes(include=[np.number])
-    if num_df.shape[1] < 2:
-        print("Not enough numerical columns for correlation matrix.")
-        return
-
-    corr = num_df.corr(method=method)
-
-    fig, ax = plt.subplots(figsize=(12, 10))
-    mask = np.triu(np.ones_like(corr, dtype=bool))
-    sns.heatmap(corr, mask=mask, annot=True, fmt=".2f", cmap="coolwarm",
-                center=0, square=True, linewidths=0.5, ax=ax,
-                cbar_kws={"shrink": 0.8})
-    ax.set_title(f"Correlation Matrix ({method.capitalize()})")
-    plt.tight_layout()
-    plt.show()
+    pass

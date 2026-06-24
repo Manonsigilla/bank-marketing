@@ -47,22 +47,21 @@ def get_metrics(y_true: np.ndarray, y_pred: np.ndarray, y_proba: np.ndarray | No
     dict
         Accuracy, Precision, Recall, F1, ROC-AUC.
     """
-    metrics = {
-        "Accuracy":  accuracy_score(y_true, y_pred),
-        "Precision": precision_score(y_true, y_pred, zero_division=0),
-        "Recall":    recall_score(y_true, y_pred, zero_division=0),
-        "F1-Score":  f1_score(y_true, y_pred, zero_division=0),
-    }
-    if y_proba is not None:
-        metrics["ROC-AUC"] = roc_auc_score(y_true, y_proba)
-    return metrics
+    pass
 
 
 def print_classification_report(y_true: np.ndarray, y_pred: np.ndarray) -> None:
     """
-    Print a formatted classification report.
+    Print a formatted classification report (precision, recall, f1-score).
+
+    Parameters
+    ----------
+    y_true : np.ndarray
+        True labels.
+    y_pred : np.ndarray
+        Predicted labels.
     """
-    print(classification_report(y_true, y_pred, target_names=["No (0)", "Yes (1)"]))
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -72,18 +71,17 @@ def print_classification_report(y_true: np.ndarray, y_pred: np.ndarray) -> None:
 def plot_confusion_matrix(y_true: np.ndarray, y_pred: np.ndarray, title: str = "Confusion Matrix") -> None:
     """
     Plot a confusion matrix heatmap.
-    """
-    cm = confusion_matrix(y_true, y_pred)
-    labels = ["No", "Yes"]
 
-    fig, ax = plt.subplots(figsize=(6, 5))
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
-                xticklabels=labels, yticklabels=labels, ax=ax)
-    ax.set_xlabel("Predicted")
-    ax.set_ylabel("Actual")
-    ax.set_title(title)
-    plt.tight_layout()
-    plt.show()
+    Parameters
+    ----------
+    y_true : np.ndarray
+        True labels.
+    y_pred : np.ndarray
+        Predicted labels.
+    title : str
+        Plot title.
+    """
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -92,21 +90,18 @@ def plot_confusion_matrix(y_true: np.ndarray, y_pred: np.ndarray, title: str = "
 
 def plot_roc_curve(y_true: np.ndarray, y_proba: np.ndarray, label: str = "Model") -> None:
     """
-    Plot the ROC curve.
-    """
-    fpr, tpr, thresholds = roc_curve(y_true, y_proba)
-    auc = roc_auc_score(y_true, y_proba)
+    Plot the ROC curve with AUC score.
 
-    fig, ax = plt.subplots(figsize=(7, 6))
-    ax.plot(fpr, tpr, label=f"{label} (AUC = {auc:.3f})", linewidth=2, color="darkorange")
-    ax.plot([0, 1], [0, 1], linestyle="--", color="gray", label="Random classifier")
-    ax.set_xlabel("False Positive Rate")
-    ax.set_ylabel("True Positive Rate")
-    ax.set_title("ROC Curve")
-    ax.legend(loc="lower right")
-    ax.grid(alpha=0.3)
-    plt.tight_layout()
-    plt.show()
+    Parameters
+    ----------
+    y_true : np.ndarray
+        True labels.
+    y_proba : np.ndarray
+        Predicted probabilities for the positive class.
+    label : str
+        Legend label for the model.
+    """
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -115,27 +110,18 @@ def plot_roc_curve(y_true: np.ndarray, y_proba: np.ndarray, label: str = "Model"
 
 def plot_feature_importance(model, feature_names: list[str], top_n: int = 20) -> None:
     """
-    Plot feature importances for tree-based models.
+    Plot feature importances for tree-based models (Random Forest, XGBoost).
+
+    Parameters
+    ----------
+    model : estimator
+        Fitted model with feature_importances_ or coef_ attribute.
+    feature_names : list[str]
+        Names of the features.
+    top_n : int
+        Number of top features to display.
     """
-    if hasattr(model, "feature_importances_"):
-        importances = model.feature_importances_
-    elif hasattr(model, "coef_"):
-        importances = np.abs(model.coef_).flatten()
-    else:
-        print("Model does not have feature_importances_ or coef_.")
-        return
-
-    importance_df = pd.DataFrame({
-        "feature": feature_names,
-        "importance": importances,
-    }).sort_values("importance", ascending=False).head(top_n)
-
-    fig, ax = plt.subplots(figsize=(10, 6))
-    sns.barplot(data=importance_df, x="importance", y="feature", palette="viridis", ax=ax)
-    ax.set_title(f"Top {top_n} Feature Importances")
-    ax.set_xlabel("Importance")
-    plt.tight_layout()
-    plt.show()
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -144,7 +130,7 @@ def plot_feature_importance(model, feature_names: list[str], top_n: int = 20) ->
 
 def compare_models(results: dict[str, dict], sort_by: str = "ROC-AUC") -> pd.DataFrame:
     """
-    Compare multiple models' performance.
+    Compare multiple models' performance in a DataFrame.
 
     Parameters
     ----------
@@ -157,6 +143,4 @@ def compare_models(results: dict[str, dict], sort_by: str = "ROC-AUC") -> pd.Dat
     -------
     pd.DataFrame
     """
-    df = pd.DataFrame(results).T
-    df = df.sort_values(sort_by, ascending=False)
-    return df
+    pass

@@ -9,6 +9,7 @@ Provides functions to load and inspect the two dataset versions:
 import pandas as pd
 from pathlib import Path
 
+
 # ---------------------------------------------------------------------------
 # Paths
 # ---------------------------------------------------------------------------
@@ -36,11 +37,10 @@ def load_bank(full: bool = True) -> pd.DataFrame:
     -------
     pd.DataFrame
     """
-    filename = "bank-full.csv" if full else "bank.csv"
-    filepath = BANK_DIR / filename
-    if not filepath.exists():
-        raise FileNotFoundError(f"File not found: {filepath}")
-    return pd.read_csv(filepath, sep=";")
+    
+    BANK_FILE = BANK_DIR / ("bank-full.csv" if full else "bank.csv")
+    df = pd.read_csv(BANK_FILE, sep=";")
+    return df
 
 
 def load_bank_additional(full: bool = True) -> pd.DataFrame:
@@ -57,11 +57,9 @@ def load_bank_additional(full: bool = True) -> pd.DataFrame:
     -------
     pd.DataFrame
     """
-    filename = "bank-additional-full.csv" if full else "bank-additional.csv"
-    filepath = BANK_ADDITIONAL_DIR / filename
-    if not filepath.exists():
-        raise FileNotFoundError(f"File not found: {filepath}")
-    return pd.read_csv(filepath, sep=";")
+    BANK_ADDITIONAL_FILE = BANK_ADDITIONAL_DIR / ("bank-additional-full.csv" if full else "bank-additional.csv")
+    df = pd.read_csv(BANK_ADDITIONAL_FILE, sep=";")
+    return df
 
 
 # ---------------------------------------------------------------------------
@@ -70,7 +68,8 @@ def load_bank_additional(full: bool = True) -> pd.DataFrame:
 
 def get_dataset_info(df: pd.DataFrame, name: str = "Dataset") -> None:
     """
-    Print basic information about a dataset.
+    Print basic information about a dataset (shape, columns, dtypes,
+    missing values, target distribution, first rows).
 
     Parameters
     ----------
@@ -79,24 +78,10 @@ def get_dataset_info(df: pd.DataFrame, name: str = "Dataset") -> None:
     name : str
         Label for display.
     """
-    print(f"{'='*60}")
-    print(f"  {name}")
-    print(f"{'='*60}")
-    print(f"Shape: {df.shape[0]:,} rows × {df.shape[1]} columns")
-    print(f"\nColumns ({len(df.columns)}):")
-    for i, col in enumerate(df.columns, 1):
-        print(f"  {i:2d}. {col:<20s}  dtype={df[col].dtype}")
-    print(f"\nMissing values:")
-    missing = df.isnull().sum()
-    missing = missing[missing > 0]
-    if len(missing) == 0:
-        print("  None (note: 'unknown' is used as a category label)")
-    else:
-        for col, count in missing.items():
-            print(f"  {col}: {count}")
-    print(f"\nTarget distribution:")
-    if "y" in df.columns:
-        print(df["y"].value_counts().to_string())
-    print(f"\nFirst 5 rows:")
-    print(df.head().to_string())
-    print()
+    print(f"\n--- {name} ---")
+    print(f"Shape: {df.shape}")
+    print(f"Columns: {list(df.columns)}")
+    print(f"Dtypes:\n{df.dtypes}")
+    print(f"Missing values:\n{df.isnull().sum()}")
+    print(f"Target distribution:\n{df['y'].value_counts()}")
+    print(f"First rows:\n{df.head()}")

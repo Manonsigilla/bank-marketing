@@ -7,25 +7,20 @@ Handles:
 - Encoding categorical variables
 - Scaling numerical features
 - Train/test splitting
-- Handling class imbalance (SMOTE, class weights)
 """
 
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler, LabelEncoder, OneHotEncoder
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
 
 
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
 
-# Columns to drop for realistic predictive modeling
 DURATION_COL = "duration"
-
-# Target column
 TARGET_COL = "y"
 
 
@@ -54,15 +49,7 @@ def separate_features_target(
     y : pd.Series
         Target variable (encoded as 0/1).
     """
-    df = df.copy()
-
-    if drop_duration and DURATION_COL in df.columns:
-        df = df.drop(columns=[DURATION_COL])
-
-    y = df[TARGET_COL].map({"yes": 1, "no": 0})
-    X = df.drop(columns=[TARGET_COL])
-
-    return X, y
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -85,9 +72,7 @@ def get_column_types(X: pd.DataFrame) -> tuple[list[str], list[str]]:
     cat_cols : list[str]
         Categorical column names.
     """
-    num_cols = X.select_dtypes(include=[np.number]).columns.tolist()
-    cat_cols = X.select_dtypes(include=["object", "category"]).columns.tolist()
-    return num_cols, cat_cols
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -121,14 +106,7 @@ def split_data(
     -------
     X_train, X_test, y_train, y_test
     """
-    stratify_arg = y if stratify else None
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y,
-        test_size=test_size,
-        random_state=random_state,
-        stratify=stratify_arg,
-    )
-    return X_train, X_test, y_train, y_test
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -154,11 +132,4 @@ def build_preprocessing_pipeline(
     -------
     ColumnTransformer
     """
-    preprocessor = ColumnTransformer(
-        transformers=[
-            ("num", StandardScaler(), num_cols),
-            ("cat", OneHotEncoder(drop="first", sparse_output=False), cat_cols),
-        ],
-        remainder="drop",
-    )
-    return preprocessor
+    pass
