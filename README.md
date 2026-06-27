@@ -84,9 +84,9 @@ pip install -r requirements.txt
 
 1. **Analyse exploratoire (EDA)** — Distribution des variables, corrélations, déséquilibre des classes
 2. **Prétraitement** — Encodage des variables catégorielles, normalisation, gestion des valeurs `unknown`
-3. **Modélisation** — Régression logistique, Random Forest, XGBoost, SVM
+3. **Modélisation** — Baseline (Dummy), Régression Logistique, Random Forest, XGBoost
 4. **Évaluation** — Accuracy, Precision, Recall, F1-Score, ROC-AUC, matrice de confusion
-5. **Optimisation** — Gestion du déséquilibre des classes (SMOTE, class_weight), tuning des hyperparamètres
+5. **Optimisation** — Gestion du déséquilibre des classes (`class_weight`, `scale_pos_weight`), GridSearchCV
 
 ---
 

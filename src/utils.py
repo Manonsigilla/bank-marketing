@@ -34,15 +34,18 @@ OUTPUTS_DIR.mkdir(exist_ok=True)
 
 def set_seed(seed: int = 42) -> None:
     """
-    Set random seeds for reproducibility across Python, NumPy, and
-    optionally TensorFlow/PyTorch.
+    Set random seeds for reproducibility across Python and NumPy.
 
     Parameters
     ----------
     seed : int
         Random seed value.
     """
-    pass
+    # Fixer les seeds garantit que les résultats sont reproductibles :
+    # même code + même seed = mêmes résultats à chaque run.
+    random.seed(seed)
+    np.random.seed(seed)
+    os.environ["PYTHONHASHSEED"] = str(seed)
 
 
 # ---------------------------------------------------------------------------
@@ -62,10 +65,22 @@ class Timer:
         self.start: float = 0.0
 
     def __enter__(self):
-        pass
+        # Démarre le chronomètre au début du bloc with
+        self.start = time.perf_counter()
+        return self
 
-    def __exit__(self, *args):
-        pass
+    def __exit__(self, *_):
+        # Arrête le chronomètre à la fin du bloc with et affiche la durée
+        elapsed = time.perf_counter() - self.start
+        # Format adapté à la durée : ms si < 1s, secondes si < 60s, minutes sinon
+        if elapsed < 1:
+            print(f"[{self.label}] {elapsed*1000:.0f} ms")
+        elif elapsed < 60:
+            print(f"[{self.label}] {elapsed:.2f} s")
+        else:
+            minutes = int(elapsed // 60)
+            seconds = elapsed % 60
+            print(f"[{self.label}] {minutes}m {seconds:.1f}s")
 
 
 # ---------------------------------------------------------------------------
@@ -88,7 +103,12 @@ def save_model(model, name: str) -> str:
     str
         Path to the saved model.
     """
-    pass
+    # Sauvegarde le modèle entraîné sur le disque.
+    # joblib est plus efficace que pickle pour les gros tableaux numpy.
+    path = MODELS_DIR / f"{name}.joblib"
+    joblib.dump(model, path)
+    print(f"Modèle sauvegardé : {path}")
+    return str(path)
 
 
 def load_model(name: str) -> object:
@@ -105,4 +125,8 @@ def load_model(name: str) -> object:
     object
         Loaded model.
     """
-    pass
+    # Recharge un modèle sauvegardé depuis le disque.
+    path = MODELS_DIR / f"{name}.joblib"
+    if not path.exists():
+        raise FileNotFoundError(f"Modèle introuvable : {path}")
+    return joblib.load(path)

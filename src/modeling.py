@@ -12,7 +12,7 @@ from sklearn.dummy import DummyClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
-from xgboost import XGBClassifier
+from xgboost import XGBClassifier  # type: ignore[import-untyped]
 
 
 # ---------------------------------------------------------------------------
@@ -44,7 +44,7 @@ def get_baseline(strategy: str = "stratified") -> DummyClassifier:
     #   (ex: 88% de "non", 12% de "oui" → répond "non" 88% du temps)
     # - "most_frequent" : répond TOUJOURS la classe majoritaire ("non")
     # - "uniform" : répond 50/50 au hasard (complètement aléatoire)
-    return DummyClassifier(strategy=strategy, random_state=RANDOM_STATE)
+    return DummyClassifier(strategy=strategy, random_state=RANDOM_STATE)  # type: ignore[arg-type]
 
 
 # ---------------------------------------------------------------------------
@@ -119,7 +119,7 @@ def get_random_forest(
     # n_jobs=-1 : utilise tous les cœurs du CPU pour aller plus vite.
     return RandomForestClassifier(
         n_estimators=n_estimators,
-        class_weight=class_weight,
+        class_weight=class_weight,  # type: ignore[arg-type]
         max_depth=max_depth,      # None = laisse les arbres grandir librement
         random_state=RANDOM_STATE,
         n_jobs=-1,                # parallélisation sur tous les cœurs
@@ -239,3 +239,30 @@ def tune_model(
     print(f"Meilleurs paramètres : {grid.best_params_}")
     print(f"Meilleur score {scoring} : {grid.best_score_:.4f}")
     return grid
+
+
+# =============================================================================
+# Guide : quel modèle choisir ?
+# =============================================================================
+#
+# Situation réelle : on veut prédire quels clients vont dire "oui".
+# Deux objectifs possibles, deux modèles différents :
+#
+# SCÉNARIO A — "Je veux comprendre POURQUOI"
+#   → Régression Logistique
+#   → On peut lire les coefficients : "un client avec un prêt en cours
+#     a 2× moins de chances de dire oui".
+#   → Utile pour présenter à un manager, un client, une direction.
+#   → Inconvénient : moins performant sur les relations complexes.
+#
+# SCÉNARIO B — "Je veux la MEILLEURE prédiction possible"
+#   → Random Forest ou XGBoost
+#   → Meilleur score, capture les interactions entre variables.
+#   → Inconvénient : boîte noire, difficile à expliquer.
+#
+# BONNE PRATIQUE : entraîner les 4 modèles et comparer avec compare_models().
+# Si la Régression Logistique est proche du Random Forest → prendre la LR
+# (plus simple, plus explicable). Si le RF est meilleur → le prendre.
+#
+# La baseline (DummyClassifier) sert uniquement de garde-fou :
+# si mon meilleur modèle fait moins bien que la baseline, il y a un bug.

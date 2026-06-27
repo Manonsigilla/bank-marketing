@@ -98,7 +98,7 @@ def plot_target_distribution(y: pd.Series, title: str = "Target Variable Distrib
     labels = ["Non (0)" if k == 0 else "Oui (1)" for k in counts.index]
 
     # 3. Créer la figure et les barres
-    fig, ax = plt.subplots()
+    _, ax = plt.subplots()
     # Bleu pour Non, orange pour Oui
     bars = ax.bar(labels, counts.to_list(), color=["steelblue", "darkorange"], edgecolor="white")
 
@@ -146,7 +146,7 @@ def plot_numerical_distributions(df: pd.DataFrame, columns: list[str] | None = N
     n_rows = (n_cols + 2) // 3
 
     # Créer une grille de sous-graphiques
-    fig, axes = plt.subplots(n_rows, 3, figsize=(15, 4 * n_rows))
+    _, axes = plt.subplots(n_rows, 3, figsize=(15, 4 * n_rows))
     # Aplatir le tableau 2D d'axes en 1D pour itérer facilement
     axes = axes.flatten()
 
@@ -203,7 +203,7 @@ def plot_categorical_distributions(
     n_rows = (n_cols + 2) // 3  # 3 graphiques par ligne
 
     # Créer une grille de sous-graphiques
-    fig, axes = plt.subplots(n_rows, 3, figsize=(15, 4 * n_rows))
+    _, axes = plt.subplots(n_rows, 3, figsize=(15, 4 * n_rows))
     axes = axes.flatten()
 
     # Si la cible est fournie, on l'ajoute temporairement pour colorer les barres
@@ -273,7 +273,7 @@ def plot_correlation_matrix(df: pd.DataFrame, method: str = "pearson") -> None:
     corr = num_df.corr(method=method)  # type: ignore
 
     # Créer la figure
-    fig, ax = plt.subplots(figsize=(12, 10))
+    _, ax = plt.subplots(figsize=(12, 10))
 
     # Masquer le triangle supérieur pour éviter les doublons
     # (la matrice est symétrique, le triangle inférieur suffit)
