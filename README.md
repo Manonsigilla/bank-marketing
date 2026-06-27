@@ -45,7 +45,7 @@ bank-marketing/
 ├── src/                        # Code source
 │   ├── __init__.py
 │   ├── data_loader.py          # Chargement des données
-│   ├── preprocessing.py        # Prétraitement & feature engineering
+
 │   ├── eda.py                  # Analyse exploratoire des données
 │   ├── modeling.py             # Entraînement des modèles
 │   ├── evaluation.py           # Évaluation & métriques

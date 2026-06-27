@@ -1,41 +1,38 @@
-────────────────────────────────────────┬───────────────────────────────────────────────────────────────────┐
-  │            Fichier/Dossier             │                               Rôle                                │
-  ├────────────────────────────────────────┼───────────────────────────────────────────────────────────────────┤
-  │ data/                                  │ Données brutes (déjà importées, non versionnées)                  │
-  ├────────────────────────────────────────┼───────────────────────────────────────────────────────────────────┤
-  │ src/data_loader.py                     │ Charger les 2 datasets (Bank + Bank Additional)                   │
-  ├────────────────────────────────────────┼───────────────────────────────────────────────────────────────────┤
-  │ src/preprocessing.py                   │ Séparer X/y, supprimer duration, encoder/scaler, train/test split │
-  ├────────────────────────────────────────┼───────────────────────────────────────────────────────────────────┤
-  │ src/eda.py                             │ Distributions, corrélations, analyse des valeurs unknown          │
-  ├────────────────────────────────────────┼───────────────────────────────────────────────────────────────────┤
-  │ src/modeling.py                        │ Baseline, Logistic Regression, Random Forest, XGBoost, GridSearch │
-  ├────────────────────────────────────────┼───────────────────────────────────────────────────────────────────┤
-  │ src/evaluation.py                      │ Accuracy, Precision, Recall, F1, ROC-AUC, matrice de confusion    │
-  ├────────────────────────────────────────┼───────────────────────────────────────────────────────────────────┤
-  │ src/utils.py                           │ Seeds, timer, sauvegarde/chargement de modèles                    │
-  ├────────────────────────────────────────┼───────────────────────────────────────────────────────────────────┤
-  │ notebooks/01_eda_bank.ipynb            │ Exploration du dataset UCI original                               │
-  ├────────────────────────────────────────┼───────────────────────────────────────────────────────────────────┤
-  │ notebooks/02_eda_bank_additional.ipynb │ Exploration du dataset enrichi                                    │
-  ├────────────────────────────────────────┼───────────────────────────────────────────────────────────────────┤
-  │ notebooks/03_modeling.ipynb            │ Pipeline complet de modélisation                                  │
-  ├────────────────────────────────────────┼───────────────────────────────────────────────────────────────────┤
-  │ models/                                │ Modèles sauvegardés (joblib)                                      │
-  ├────────────────────────────────────────┼───────────────────────────────────────────────────────────────────┤
-  │ outputs/                               │ Résultats et rapports                                             │
-  ├────────────────────────────────────────┼───────────────────────────────────────────────────────────────────┤
-  │ figures/                               │ Graphiques exportés                                               │
-  └────────────────────────────────────────┴───────────────────────────────────────────────────────────────────┘
+# Document technique — Bank Marketing
 
-  ⚙️  Détails importants
+> Projet de Machine Learning : prédire si un client va souscrire à un dépôt à terme bancaire.
 
-  - L'attribut duration est automatiquement exclu (drop_duration=True par défaut) pour que les modèles soient réalistes
-  - Les valeurs unknown sont conservées comme catégorie à part entière (pas de suppression automatique)
-  - Les modèles sont configurés avec gestion du déséquilibre des classes (class_weight='balanced' ou scale_pos_weight)
+---
 
-  🚀 Pour lancer un notebook
+## 🗂️ Structure du projet
 
-  cd bank-marketing
-  source venv/Scripts/activate
-  jupyter notebook notebooks/
+| Fichier/Dossier | Rôle |
+|---|---|
+| `data/` | Données brutes (déjà importées) |
+| `src/data_loader.py` | Charger les 2 datasets (Bank + Bank Additional) |
+| `src/eda.py` | Analyse exploratoire (distributions, corrélations, valeurs `unknown`) |
+| `src/modeling.py` | Configuration PyCaret et comparaison automatique des modèles |
+| `src/evaluation.py` | Métriques manuelles, rapport de classification, guide d'interprétation |
+| `src/utils.py` | Seeds, timer, sauvegarde/chargement de modèles |
+| `notebooks/01_eda.ipynb` | Exploration des deux datasets |
+| `notebooks/02_modeling.ipynb` | Pipeline complet de modélisation avec PyCaret (AutoML) |
+| `models/` | Modèles sauvegardés |
+| `outputs/` | Résultats et rapports |
+
+---
+
+## ⚙️ Points clés
+
+- L'attribut `duration` est **exclu** des modèles prédictifs (inconnu avant la fin de l'appel)
+- Les valeurs `unknown` sont conservées comme catégorie à part entière
+- PyCaret gère automatiquement le prétraitement, l'encodage, le scaling et la gestion du déséquilibre
+
+---
+
+## 🚀 Lancement rapide
+
+```bash
+cd bank-marketing
+conda activate bank-marketing
+jupyter notebook notebooks/
+```
