@@ -66,13 +66,11 @@ bank-marketing/
 git clone <repo-url>
 cd bank-marketing
 
-# 2. Créer l'environnement virtuel
-python -m venv venv
+# 2. Créer l'environnement conda (Python 3.11 requis par PyCaret)
+conda create -n bank-marketing python=3.11 -y
 
 # 3. Activer l'environnement
-source venv/Scripts/activate   # Windows (Git Bash)
-# ou
-venv\Scripts\activate          # Windows (cmd)
+conda activate bank-marketing
 
 # 4. Installer les dépendances
 pip install -r requirements.txt
@@ -83,10 +81,10 @@ pip install -r requirements.txt
 ## 📈 Approche
 
 1. **Analyse exploratoire (EDA)** — Distribution des variables, corrélations, déséquilibre des classes
-2. **Prétraitement** — Encodage des variables catégorielles, normalisation, gestion des valeurs `unknown`
-3. **Modélisation** — Baseline (Dummy), Régression Logistique, Random Forest, XGBoost
+2. **Prétraitement** — Identification des anomalies (`unknown`), suppression de `duration`
+3. **Modélisation avec PyCaret (AutoML)** — Comparaison automatique de 15+ modèles en une commande
 4. **Évaluation** — Accuracy, Precision, Recall, F1-Score, ROC-AUC, matrice de confusion
-5. **Optimisation** — Gestion du déséquilibre des classes (`class_weight`, `scale_pos_weight`), GridSearchCV
+5. **Interprétation** — Analyse du meilleur modèle, importance des features, conclusions métier
 
 ---
 
