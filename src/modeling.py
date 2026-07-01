@@ -72,7 +72,7 @@ def setup_pycaret(
         session_id=session_id,
         preprocess=True,
         fix_imbalance=fix_imbalance,
-        silent=True,
+        verbose=False,
         log_experiment=False,
     )
     print("✅ Environnement PyCaret initialisé.")
@@ -110,6 +110,8 @@ def compare_all_models(
     Returns
     -------
     best_model : le meilleur modèle entraîné (utilisable avec plot_model, predict_model...)
+    top_models : list
+        Liste des n_select meilleurs modèles (ou un seul modèle si n_select=1).
     results : pd.DataFrame
         Tableau comparatif des modèles trié par la métrique choisie.
     """
@@ -117,11 +119,18 @@ def compare_all_models(
     # En une ligne, elle entraîne et compare tous les modèles disponibles.
     # - sort : la métrique de classement
     # - n_select : combien de modèles garder
-    # Retourne le(s) meilleur(s) modèle(s) entraîné(s)
-    best_model = compare_models(sort=sort, n_select=n_select)
+    # Si n_select=1 : retourne un modèle unique
+    # Si n_select>1 : retourne une liste de modèles
+    top_models = compare_models(sort=sort, n_select=n_select)
 
     # Récupérer le tableau de résultats détaillé
     results = pull()
+
+    # Extraire le meilleur modèle (le 1er de la liste si n_select > 1)
+    if isinstance(top_models, list):
+        best_model = top_models[0]
+    else:
+        best_model = top_models
 
     print(f"\n📊 Comparaison des {n_select} meilleurs modèles (triés par {sort}) :")
     print(results.head(n_select).to_string())
